@@ -1,2 +1,3 @@
 targets/ctc_v1/.mxproject
 build/
+targets/ctc_v1/Makefile

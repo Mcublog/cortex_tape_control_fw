@@ -1,5 +1,5 @@
 # region HAL
-set(QM_V1_HAL_INCLUDE_DIRS
+set(CTC_V1_HAL_INCLUDE_DIRS
     ${PROJECT_SOURCE_DIR}/targets/ctc_v1/Core/Inc
     ${PROJECT_SOURCE_DIR}/targets/ctc_v1/Drivers/STM32F0xx_HAL_Driver/Inc
     ${PROJECT_SOURCE_DIR}/targets/ctc_v1/Drivers/STM32F0xx_HAL_Driver/Inc/Legacy
@@ -14,7 +14,7 @@ set(QM_V1_HAL_INCLUDE_DIRS
 
 # Put here your symbols (preprocessor defines), one in each line
 # Encapsulate them with double quotes for safety purpose
-set(QM_V1_DEFINES
+set(CTC_V1_DEFINES
     $<$<CONFIG:DEBUG>:"DEBUG">
     $<$<CONFIG:RELASE>:"NDEBUG">
     $<$<CONFIG:RelWithDebInfo>:"FORCE_LOG">

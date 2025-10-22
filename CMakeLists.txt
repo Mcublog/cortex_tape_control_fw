@@ -17,7 +17,6 @@ endif()
 set_property(GLOBAL PROPERTY RULE_MESSAGES OFF)
 
 include(cmake/common.cmake)
-include(cmake/mcu.cmake)
 include(cmake/desktop.cmake)
 include(cmake/utils.cmake)
 # endregion
@@ -30,7 +29,7 @@ LOG_INFO("Build type:......." ${CMAKE_BUILD_TYPE})
 
 add_subdirectory(cmake)
 add_subdirectory(targets)
-# add_subdirectory(hwtest)
+add_subdirectory(hwtest)
 # add_subdirectory(test)
 
 # Added color compiler output

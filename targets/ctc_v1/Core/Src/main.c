@@ -27,7 +27,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "app/application.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -98,7 +98,7 @@ int main(void)
   MX_ADC_Init();
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
-
+  application();
   /* USER CODE END 2 */
 
   /* Infinite loop */
