@@ -27,7 +27,7 @@ function(fw_app_build_script targetname extra_option)
 
     # Build lib
     add_executable(${targetname}
-        ${LOG_DEBUG_SOURCES}
+        ${DEBUG_SOURCES}
         ${HAL_SOURCES}
         ${ARCH_SOURCES}
         ${BSP_SOURCES}
@@ -45,8 +45,8 @@ function(fw_app_build_script targetname extra_option)
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${PROJECT_SOURCE_DIR}
         ${CTC_V1_HAL_INCLUDE_DIRS}
-        ${APP_DIRS}
         ${RTT_INCLUDE_DIRS}
+        ${PROJECT_SOURCE_DIR}/libs
         ${PROJECT_SOURCE_DIR}/libs/debug
         ${DEBUG_INCLUDES}
         ${RING_BUFFER_INCLUDES}

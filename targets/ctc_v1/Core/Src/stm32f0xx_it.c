@@ -26,7 +26,7 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN TD */
-
+#include "app/system/systick.h"
 /* USER CODE END TD */
 
 /* Private define ------------------------------------------------------------*/
@@ -130,7 +130,7 @@ void SysTick_Handler(void)
   /* USER CODE END SysTick_IRQn 0 */
   HAL_IncTick();
   /* USER CODE BEGIN SysTick_IRQn 1 */
-
+  systick_handler();
   /* USER CODE END SysTick_IRQn 1 */
 }
 

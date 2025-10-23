@@ -1,0 +1,3 @@
+[submodule "libs/SoftwareTimer"]
+	path = libs/SoftwareTimer
+	url = git@github.com:Mcublog/SoftwareTimer.git

@@ -31,13 +31,13 @@ function(ctc_pcb_v1_add_hw_test targetname)
         ${PROJECT_SOURCE_DIR}
         ${PROJECT_SOURCE_DIR}/hwtest/ctc_v1/common
         ${CTC_V1_HAL_INCLUDE_DIRS}
-        ${APP_DIRS}
         ${RTT_INCLUDE_DIRS}
         ${PROJECT_SOURCE_DIR}/libs
         ${PROJECT_SOURCE_DIR}/libs/debug
         ${RING_BUFFER_INCLUDES}
         ${SOFTWARE_TIMER_INCLUDES}
         ${PROJECT_SOURCE_DIR}/bsp/ctc_v1
+        ${PROJECT_SOURCE_DIR}/bsp/ctc_v1/configs
         ${PROJECT_SOURCE_DIR}/targets/ctc_v1
     )
 

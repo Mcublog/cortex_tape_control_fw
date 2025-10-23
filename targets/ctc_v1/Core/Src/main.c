@@ -28,6 +28,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "app/application.h"
+#include "app/utils/itimer.h"
+#include "libs/SoftwareTimer/SoftTimers.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -70,7 +72,10 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-
+  const stimer_init_ctx_t m_timer_ctx = {
+    .disable_irq = timer_irq_disable,
+    .enable_irq = timer_irq_enable
+  };
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -98,6 +103,7 @@ int main(void)
   MX_ADC_Init();
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
+  Timer_Init(&m_timer_ctx);
   application();
   /* USER CODE END 2 */
 
