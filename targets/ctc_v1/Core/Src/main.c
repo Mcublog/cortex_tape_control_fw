@@ -28,7 +28,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "app/application.h"
+#include "app/utils/itick_timer.h"
 #include "app/utils/itimer.h"
+
 #include "libs/SoftwareTimer/SoftTimers.h"
 /* USER CODE END Includes */
 
@@ -103,6 +105,8 @@ int main(void)
   MX_ADC_Init();
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
+  tt_init(&htim6);
+  tt_init(&htim7);
   Timer_Init(&m_timer_ctx);
   application();
   /* USER CODE END 2 */

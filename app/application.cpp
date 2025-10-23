@@ -11,6 +11,9 @@
 #include "application.h"
 
 #include "app/version.h"
+#include "app/utils/idelay.h"
+
+#include "arch/stm32f0/io/shiftregleds.h"
 //>>---------------------- Log control
 #define LOG_MODULE_NAME app
 #define LOG_MODULE_LEVEL (3)
@@ -24,8 +27,13 @@
 void application(void)
 {
     LOG_INFO("Version: %s", FW_VERSION);
+    shftregl_init();
+
     while (1)
     {
-        /* code */
+        shftregl_write(0x02);
+        delay_ms(25);
+        shftregl_write(0x00);
+        delay_ms(250);
     }
 }
