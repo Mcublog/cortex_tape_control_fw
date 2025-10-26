@@ -11,11 +11,11 @@
 #include <sys/time.h>
 
 #include "app/application.h"
-#include "app/io/igpio.h"
+#include "app/io/inputs.h"
 #include "app/utils/idelay.h"
 #include "app/version.h"
 
-#include "arch/stm32f0/io/shiftregleds.h"
+#include "bsp/ctc_v1/ui/ShiftRegInd.hpp"
 //>>---------------------- Log control
 #define LOG_MODULE_NAME app
 #define LOG_MODULE_LEVEL (3)
@@ -29,11 +29,17 @@
 void application(void)
 {
     LOG_INFO("Version: %s", FW_VERSION);
-    shftregl_init();
-    shftregl_write(0);
 
+    ShiftRegInd ind = {};
+    ind.init();
+    ind.set_bit((uint8_t)0, true);
+    inputs_t i = inputs_read();
+    LOG_INFO("inputs: 0x%02x", i.d8);
+    inputs_print(i);
     while (1)
     {
-
+        i = inputs_read();
+        ind.set_inputs(i);
+        delay_ms(10);
     }
 }

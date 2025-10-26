@@ -44,7 +44,7 @@ bool io_gpio_btn1(void)
 
 bool io_gpio_brake_sens(void)
 {
-    return HAL_GPIO_ReadPin(BRAKE_SENS_GPIO_Port, BRAKE_SENS_Pin) == GPIO_PIN_RESET;
+    return HAL_GPIO_ReadPin(BRAKE_SENS_GPIO_Port, BRAKE_SENS_Pin) == GPIO_PIN_SET;
 }
 
 bool io_gpio_sw1(void)
