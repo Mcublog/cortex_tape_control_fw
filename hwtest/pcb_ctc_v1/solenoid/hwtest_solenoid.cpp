@@ -22,6 +22,28 @@
 #include <debug/log_libs.h>
 //<<----------------------
 
+static void solenoid_pull(uint16_t pulse_ms)
+{
+    io_gpio_solenoid(true);
+    shftregl_write(1);
+    delay_ms(pulse_ms);
+    io_gpio_solenoid(false);
+    shftregl_write(0);
+}
+
+static void stop()
+{
+    LOG_INFO("stop");
+    solenoid_pull(200);
+    delay_ms(1000);
+}
+
+static void play()
+{
+    LOG_INFO("play");
+    solenoid_pull(400);
+    delay_ms(1000);
+}
 /**
  * @brief
  *
@@ -32,14 +54,13 @@ void application(void)
     shftregl_init();
     shftregl_write(0);
 
-    uint32_t pulse_delay = 500;
-
     while (1)
     {
-        delay_ms(pulse_delay);
-        io_gpio_solenoid(false);
-        delay_ms(pulse_delay);
-        io_gpio_solenoid(true);
-        delay_ms(1000);
+        LOG_INFO("----- new cycle ----");
+        play();
+        delay_ms(5000);
+        stop();
+        delay_ms(2500);
+        LOG_INFO("--------------");
     }
 }

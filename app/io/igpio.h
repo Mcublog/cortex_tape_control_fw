@@ -21,6 +21,13 @@ extern "C"
     bool io_gpio_btn0(void);
     bool io_gpio_btn1(void);
 
+    bool io_gpio_brake_sens(void);
+    bool io_gpio_sw1(void);
+    bool io_gpio_sw2(void);
+    bool io_gpio_sw3(void);
+    bool io_gpio_sw4(void);
+    bool io_gpio_tacho(void);
+
 #ifdef __cplusplus
 }
 #endif
