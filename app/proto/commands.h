@@ -9,10 +9,7 @@ typedef enum
 {
     CMD_UNKNOWN = 0x00, // NOTE: must be in 0 index
     CMDID_GET_VERSION = 0x01,
-    CMDID_GET_CURRENT_VALUES = 0x02,
-    CMDID_GET_SETTINGS = 0x03,
-    CMDID_SET_SETTINGS = 0x04,
-    CMDID_SET_STATE = 0x05,
+    CMDID_SET_SOLENOID= 0x02,
     CMDID_LAST
 } command_id_t;
 
