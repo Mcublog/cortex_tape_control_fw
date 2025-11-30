@@ -26,8 +26,7 @@
 #include <debug/log_libs.h>
 //>>---------------------- Locals
 CobsParser *m_parser = nullptr;
-command_callback_t m_settings_changed_clb = nullptr;
-command_callback_t m_ininital_state_changed_clb = nullptr;
+command_callback_t m_solenoid_pull_clb = nullptr;
 
 static bool command_handler(const command_t *command)
 {
@@ -39,16 +38,9 @@ static bool command_handler(const command_t *command)
     LOG_INFO("handle: id: %#x version: %#x", command->h.id, version);
     if (command->h.id == command_id_t::CMDID_GET_VERSION)
         ack = get_version(command->h.id, output, limit, &outsize);
-    // else if (command->h.id == command_id_t::CMDID_GET_CURRENT_VALUES)
-    //     ack = current_values(command->h.id, output, limit, &outsize);
-    // else if (command->h.id == command_id_t::CMDID_GET_SETTINGS)
-    //     ack = settings_get_handler(command->h.id, output, limit, &outsize);
-    // else if (command->h.id == command_id_t::CMDID_SET_SETTINGS)
-    //     ack = settings_set_handler(command->h.id, command->data, output, limit, &outsize,
-    //                                m_settings_changed_clb);
-    // else if (command->h.id == command_id_t::CMDID_SET_STATE)
-    //     ack = state_set_handler(command->h.id, command->data, output, limit, &outsize,
-    //                             m_ininital_state_changed_clb);
+    else if (command->h.id == command_id_t::CMDID_SOLENOID_PULL)
+        ack = solenoid_pull(command->h.id, command->data, output, limit, &outsize,
+                                m_solenoid_pull_clb);
 
     if (!ack)
         ack = unk_command_handler(command->h.id, output, limit, &outsize);
@@ -60,7 +52,7 @@ static bool command_handler(const command_t *command)
 static const command_list_item_t m_command_list[CMDID_LAST] = {
     {CMD_UNKNOWN, command_handler}, // NOTE: must be in 0 index
     {CMDID_GET_VERSION, command_handler},
-    {CMDID_SET_SOLENOID, command_handler},
+    {CMDID_SOLENOID_PULL, command_handler},
 };
 
 //<<----------------------
@@ -84,4 +76,9 @@ bool Communication::process()
     command_parser((const command_t *)msg->data);
 
     return false;
+}
+
+void Communication::callback_attach_solenoid_pull(command_callback_t c)
+{
+    m_solenoid_pull_clb = c;
 }

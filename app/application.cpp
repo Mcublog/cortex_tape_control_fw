@@ -20,6 +20,14 @@
 #include <debug/log_libs.h>
 //<<----------------------
 
+void on_solenoid_pull(void *data, uint32_t size)
+{
+    const sollenoid_pull_t cmd = *((const sollenoid_pull_t *)data);
+
+    LOG_INFO("pull param: pull ms: %d cooldown ms: %d", cmd.pull_time_ms,
+             cmd.cooldown_ms);
+}
+
 /**
  * @brief
  *
@@ -36,6 +44,8 @@ void application(void)
     }
     sys->what();
     sys->init();
+
+    Communication::callback_attach_solenoid_pull((command_callback_t)on_solenoid_pull);
 
     while (1)
     {

@@ -4,6 +4,7 @@ from enum import Enum, auto
 class Commands(Enum):
     CMDID_UNKNOWN = 0x00
     CMDID_GET_VERSION = 0x01
+    CMDID_SOLENOID_PULL = 0x02
     CMDID_LAST = auto()
 
     @classmethod

@@ -9,7 +9,7 @@ typedef enum
 {
     CMD_UNKNOWN = 0x00, // NOTE: must be in 0 index
     CMDID_GET_VERSION = 0x01,
-    CMDID_SET_SOLENOID= 0x02,
+    CMDID_SOLENOID_PULL = 0x02,
     CMDID_LAST
 } command_id_t;
 
@@ -28,6 +28,12 @@ typedef struct
 {
     uint32_t error;
 } command_ack_t;
+
+typedef struct
+{
+    uint32_t pull_time_ms;
+    uint32_t cooldown_ms;
+} sollenoid_pull_t;
 
 typedef struct command_list_item
 {
