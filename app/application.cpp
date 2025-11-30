@@ -30,7 +30,6 @@ static void solenoid_pull(uint16_t pulse_ms)
     isystem()->indication()->set_bit(0, 0);
 }
 
-
 static void on_solenoid_pull(void *data, uint32_t size)
 {
     const sollenoid_pull_t cmd = *((const sollenoid_pull_t *)data);
@@ -65,6 +64,9 @@ void application(void)
 
     while (1)
     {
+        bool tacho = io_gpio_tacho();
+        isystem()->indication()->set_bit(1, tacho);
+
         Communication::process();
     }
 }

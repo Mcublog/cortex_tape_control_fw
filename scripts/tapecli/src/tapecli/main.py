@@ -14,10 +14,10 @@ from tapecli.interface import Command
 from tapecli.protocol.commands.list import Commands
 from tapecli.protocol.commands.solenoid_pull import SolenoidPullV1
 from tapecli.protocol.commands.version import VersionV1
+from tapecli.version import VERSION
 
 log = logger_init(__name__, logging.INFO)
 
-VERSION = "0.0.1"
 DESCRIPTION = f"Sender data to tape controller v{VERSION}"
 
 USAGE = '\n'.join((f"{DESCRIPTION}. Send some command to controller",
@@ -78,10 +78,10 @@ def main():
     else:
         try:
             data = json.loads(Path(path_to_command).read_text())
+            cmd = SolenoidPullV1(**data).request()
         except Exception as e:
             log.error(e)
             sys.exit(1)
-        cmd = SolenoidPullV1(**data).request()
 
     device.send(cmd)
 
