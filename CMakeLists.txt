@@ -21,7 +21,7 @@ include(cmake/desktop.cmake)
 include(cmake/utils.cmake)
 # endregion
 
-project(battary_cmeter VERSION 0.0.1 LANGUAGES C CXX ASM)
+project(battary_cmeter VERSION 0.1.0 LANGUAGES C CXX ASM)
 
 LOG_INFO("Version:.........." ${CMAKE_PROJECT_VERSION})
 LOG_INFO("Host system:......" ${CMAKE_SYSTEM_NAME})
