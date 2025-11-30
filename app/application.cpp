@@ -10,6 +10,7 @@
  */
 #include "application.h"
 
+#include "app/io/igpio.h"
 #include "app/process/communication/process.hpp"
 #include "app/system/system.h"
 #include "app/utils/idelay.h"
@@ -20,12 +21,25 @@
 #include <debug/log_libs.h>
 //<<----------------------
 
-void on_solenoid_pull(void *data, uint32_t size)
+static void solenoid_pull(uint16_t pulse_ms)
+{
+    io_gpio_solenoid(true);
+    isystem()->indication()->set_bit(0, 1);
+    delay_ms(pulse_ms);
+    io_gpio_solenoid(false);
+    isystem()->indication()->set_bit(0, 0);
+}
+
+
+static void on_solenoid_pull(void *data, uint32_t size)
 {
     const sollenoid_pull_t cmd = *((const sollenoid_pull_t *)data);
 
     LOG_INFO("pull param: pull ms: %d cooldown ms: %d", cmd.pull_time_ms,
              cmd.cooldown_ms);
+
+    solenoid_pull(cmd.pull_time_ms);
+    delay_ms(cmd.cooldown_ms);
 }
 
 /**
@@ -44,6 +58,8 @@ void application(void)
     }
     sys->what();
     sys->init();
+
+    isystem()->indication()->init();
 
     Communication::callback_attach_solenoid_pull((command_callback_t)on_solenoid_pull);
 

@@ -15,6 +15,8 @@
 
 #include "arch/stm32f0/interfaces/UsbSerial.hpp"
 
+#include "bsp/ctc_v1/ui/ShiftRegInd.hpp"
+
 #include "main.h"
 
 #include "stm32f0xx_ll_pwr.h"
@@ -25,6 +27,7 @@
 //>>---------------------- Locals
 static USBSerial m_sdev = USBSerial();
 static CobsParser m_cobsp = CobsParser();
+static ShiftRegInd m_indication = ShiftRegInd();
 //<<----------------------
 void SystemHW::init()
 {
@@ -69,4 +72,9 @@ bool SystemHW::prepare_to_sleep()
     // Убрать систик
     HAL_SuspendTick();
     return false;
+}
+
+Indication *SystemHW::indication()
+{
+    return &m_indication;
 }

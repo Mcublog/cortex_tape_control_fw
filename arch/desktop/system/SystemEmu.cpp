@@ -18,6 +18,8 @@
 #include "app/utils/idelay.h"
 
 #include "arch/desktop/interfaces/Sdev.hpp"
+
+#include "bsp/desktop/ui/ShiftRegInd.hpp"
 //>>---------------------- Log control
 #define LOG_MODULE_NAME esys
 #define LOG_MODULE_LEVEL (3)
@@ -32,6 +34,7 @@ static void *communication_reading(void*);
 
 static SDevice m_sdev = SDevice("/dev/ttyS11", communication_reading);
 static CobsParser m_cobsp = CobsParser();
+static ShiftRegInd m_indication = ShiftRegInd();
 
 static void read_process(SDevice *ser)
 {
@@ -71,6 +74,11 @@ void SystemEmu::what(void)
 Serial *SystemEmu::communication_serial()
 {
     return &m_sdev;
+}
+
+Indication *SystemEmu::indication()
+{
+    return &m_indication;
 }
 /**
  * @brief

@@ -15,6 +15,7 @@ class SystemHW final : public System
 
     Serial *communication_serial() override;
     CobsParser *cobs_parser() override;
+    Indication *indication() override;
 
     bool prepare_to_sleep() override;
     bool go_to_stanby() override;

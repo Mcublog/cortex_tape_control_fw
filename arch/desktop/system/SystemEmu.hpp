@@ -14,6 +14,7 @@ class SystemEmu final : public System
 
     Serial *communication_serial() override;
     CobsParser *cobs_parser() override;
+    Indication *indication() override;
 };
 
 #endif // TARGETS_DESKTOP_IMPL_SYSTEM_EMU_HPP
