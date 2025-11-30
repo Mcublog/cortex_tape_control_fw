@@ -1,3 +1,7 @@
 targets/ctc_v1/.mxproject
 build/
 targets/ctc_v1/Makefile
+env/
+*.egg-info
+*.pyc
+__pycache__

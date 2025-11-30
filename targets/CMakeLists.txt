@@ -1,5 +1,5 @@
 add_subdirectory(ctc_v1)
-# add_subdirectory(emu)
+add_subdirectory(emu)
 
 # add_custom_target(targets
 #     ALL

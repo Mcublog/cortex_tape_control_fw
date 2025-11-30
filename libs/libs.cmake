@@ -18,3 +18,10 @@ set(SOFTWARE_TIMER_INCLUDES
 file(GLOB_RECURSE SOFTWARE_TIMER_SOURCES
     ${PROJECT_SOURCE_DIR}/libs/SoftwareTimer/SoftTimers.c
 )
+
+set(COBS_INCLUDES
+    ${PROJECT_SOURCE_DIR}/libs/cobs-c
+)
+file(GLOB_RECURSE COBS_SOURCES
+    ${PROJECT_SOURCE_DIR}/libs/cobs-c/cobsr.c
+)

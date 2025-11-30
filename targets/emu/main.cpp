@@ -14,7 +14,9 @@
 #include "app/system/systick.h"
 #include "app/utils/idelay.h"
 #include "app/utils/itimer.h"
+
 #include "io_emu/io_mock.h"
+
 #include "libs/SoftwareTimer/SoftTimers.h"
 //>>---------------------- Log control
 #define LOG_MODULE_NAME main

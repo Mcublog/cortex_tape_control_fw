@@ -1,0 +1,4 @@
+cobs==1.2.2
+pyserial==3.5
+pylogus==0.1.0
+crc==6.1.1

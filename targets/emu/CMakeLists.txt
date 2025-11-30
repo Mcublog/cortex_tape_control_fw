@@ -18,6 +18,10 @@ file(GLOB_RECURSE SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
 )
 
+file(GLOB_RECURSE APP_SOURCES
+    ${PROJECT_SOURCE_DIR}/app/*.c
+    ${PROJECT_SOURCE_DIR}/app/*.cpp)
+
 # Buid DESKTOP target
 add_executable(${DESKTOP_TARGET}
     ${SOURCES}
@@ -41,8 +45,9 @@ target_include_directories(${DESKTOP_TARGET} PRIVATE
     ${RING_BUFFER_INCLUDES}
     ${CAPACITY_METER_INCLUDES}
     ${DEBUG_INCLUDES}
-    ${LIBS_DIR}
     ${RINGFS_INCLUDES}
+    ${LIBS_DIR}
+    ${PROJECT_SOURCE_DIR}/libs
 )
 
 # Project symbols
