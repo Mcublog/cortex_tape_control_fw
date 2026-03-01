@@ -157,23 +157,6 @@ static void HAL_TIM2_Base_MspInit(TIM_HandleTypeDef* tim_baseHandle)
   }
 }
 
-static void HAL_TIM2_Base_MspDeInit(TIM_HandleTypeDef* tim_baseHandle)
-{
-
-  if(tim_baseHandle->Instance==TIM2)
-  {
-  /* USER CODE BEGIN TIM2_MspDeInit 0 */
-
-  /* USER CODE END TIM2_MspDeInit 0 */
-    /* Peripheral clock disable */
-    __HAL_RCC_TIM2_CLK_DISABLE();
-  /* USER CODE BEGIN TIM2_MspDeInit 1 */
-
-  /* USER CODE END TIM2_MspDeInit 1 */
-  }
-}
-
-
 static void HAL_TIM2_MspPostInit(TIM_HandleTypeDef* timHandle)
 {
 
@@ -181,7 +164,7 @@ static void HAL_TIM2_MspPostInit(TIM_HandleTypeDef* timHandle)
   if(timHandle->Instance==TIM2)
   {
   /* USER CODE BEGIN TIM2_MspPostInit 0 */
-
+    HAL_GPIO_DeInit(SW3_GPIO_Port, SW3_Pin);
   /* USER CODE END TIM2_MspPostInit 0 */
 
     __HAL_RCC_GPIOB_CLK_ENABLE();
@@ -207,6 +190,7 @@ void MX_TIM2_Init(void)
 {
 
   /* USER CODE BEGIN TIM2_Init 0 */
+  htim2.Instance = TIM2;
   HAL_TIM2_Base_MspInit(&htim2);
   /* USER CODE END TIM2_Init 0 */
 
