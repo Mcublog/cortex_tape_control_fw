@@ -87,6 +87,8 @@ void Error_Handler(void);
 #define SW2_GPIO_Port GPIOB
 #define SW1_Pin GPIO_PIN_5
 #define SW1_GPIO_Port GPIOB
+#define POWER_ON_Pin GPIO_PIN_6
+#define POWER_ON_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

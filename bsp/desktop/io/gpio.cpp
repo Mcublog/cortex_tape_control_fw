@@ -68,4 +68,9 @@ bool io_gpio_tacho(void)
 {
     return true;
 }
+
+void io_gpio_power(bool on)
+{
+
+}
 //<<----------------------

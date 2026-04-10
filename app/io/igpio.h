@@ -28,6 +28,8 @@ extern "C"
     bool io_gpio_sw4(void);
     bool io_gpio_tacho(void);
 
+    void io_gpio_power(bool on);
+
 #ifdef __cplusplus
 }
 #endif

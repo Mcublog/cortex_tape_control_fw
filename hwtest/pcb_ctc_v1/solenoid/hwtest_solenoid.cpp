@@ -51,6 +51,12 @@ static void play()
     delay_ms(1000);
 }
 
+static void power_set(bool on)
+{
+    LOG_INFO("power_set: %d", on);
+    io_gpio_power(on);
+}
+
 void gear_func_sequence(bool head_dir_is_a, bool lift_head, bool reel_fwd)
 {
     // Function sequence has 190 degree of function gear to rotate in 400 ms
@@ -90,7 +96,7 @@ void application(void)
     LOG_INFO("Version: %s", FW_VERSION);
     shftregl_init();
     shftregl_write(0);
-
+    power_set(true);
     while (1)
     {
         LOG_INFO("----- new cycle ----");

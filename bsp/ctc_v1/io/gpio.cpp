@@ -71,4 +71,10 @@ bool io_gpio_tacho(void)
 {
     return HAL_GPIO_ReadPin(TACHO_GPIO_Port, TACHO_Pin) == GPIO_PIN_RESET;
 }
+
+void io_gpio_power(bool on)
+{
+    HAL_GPIO_WritePin(POWER_ON_GPIO_Port, POWER_ON_Pin,
+                      on ? GPIO_PIN_SET : GPIO_PIN_RESET);
+}
 //<<----------------------
