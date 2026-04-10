@@ -21,6 +21,11 @@
 #define LOG_MODULE_LEVEL (3)
 #include <debug/log_libs.h>
 //<<----------------------
+static void power_set(bool on)
+{
+    LOG_INFO("power_set: %d", on);
+    io_gpio_power(on);
+}
 
 static void solenoid_pull_static(bool s)
 {
@@ -37,24 +42,20 @@ static void solenoid_pull(uint16_t pulse_ms)
     shftregl_write(0);
 }
 
-static void stop()
+static void stop(bool power_off)
 {
+    if (power_off)
+    {
+        power_set(true);
+        delay_ms(100);
+    }
     LOG_INFO("stop");
-    solenoid_pull(200);
+    solenoid_pull(225);
+    if (power_off)
+    {
+        power_set(false);
+    }
     delay_ms(1000);
-}
-
-static void play()
-{
-    LOG_INFO("play");
-    solenoid_pull(400);
-    delay_ms(1000);
-}
-
-static void power_set(bool on)
-{
-    LOG_INFO("power_set: %d", on);
-    io_gpio_power(on);
 }
 
 void gear_func_sequence(bool head_dir_is_a, bool lift_head, bool reel_fwd)
@@ -73,6 +74,9 @@ void gear_func_sequence(bool head_dir_is_a, bool lift_head, bool reel_fwd)
     // Be careful about the consistency of pinch roller direction and reel direction,
     //  otherwise they could pull to opposite directions and give unexpected extension stress to the tape
 
+    power_set(true);
+    delay_ms(100);
+
     solenoid_pull_static(true);
     delay_ms(tInitE);
     solenoid_pull_static(!head_dir_is_a);
@@ -86,6 +90,26 @@ void gear_func_sequence(bool head_dir_is_a, bool lift_head, bool reel_fwd)
     solenoid_pull_static(false);
     delay_ms(20);  // additional margin
 
+    // power_set(false);
+    // delay_ms(100);
+}
+
+static void play_a()
+{
+    LOG_INFO("play_a");
+    gear_func_sequence(false, true, false);
+}
+
+static void rew_a()
+{
+    LOG_INFO("rew_a");
+    gear_func_sequence(false, false, false);
+}
+
+static void rew_b()
+{
+    LOG_INFO("rew_b");
+    gear_func_sequence(true, false, true);
 }
 /**
  * @brief
@@ -96,14 +120,28 @@ void application(void)
     LOG_INFO("Version: %s", FW_VERSION);
     shftregl_init();
     shftregl_write(0);
-    power_set(true);
+    power_set(false);
     while (1)
     {
-        LOG_INFO("----- new cycle ----");
-        gear_func_sequence(true, true, false);
-        delay_ms(5000);
-        stop();
+        stop(true);
         delay_ms(2500);
+        LOG_INFO("----- new cycle ----");
+        play_a();
+        // gear_func_sequence(true, false, true);
+        // solenoid_pull(50);
+        // gear_func_sequence(true, true, true);
+        // play();
+        delay_ms(5000);
+        stop(false);
+        // solenoid_pull(150);
+        rew_b();
+        // stop();
+        // delay_ms(100);
+        // // stop();
+        // rew_a();
+        delay_ms(5000);
+        // stop(false);
+
         LOG_INFO("--------------");
     }
 }
