@@ -39,6 +39,26 @@ bool io_gpio_btn1(void)
     return true;
 }
 
+bool io_gpio_btn2(void)
+{
+    return true;
+}
+
+bool io_gpio_btn3(void)
+{
+    return true;
+}
+
+bool io_gpio_btn4(void)
+{
+    return true;
+}
+
+bool io_gpio_btn5(void)
+{
+    return true;
+}
+
 bool io_gpio_brake_sens(void)
 {
     return true;

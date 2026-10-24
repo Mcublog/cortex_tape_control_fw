@@ -37,9 +37,9 @@ uint8_t *solenoid_pull(uint32_t id, const uint8_t *input, command_t *outcmd,
     }
 
     command_ack_t *ack = (command_ack_t *)outcmd->data;
-    ack->error = 0;
+    ack->error = (clb != nullptr) ? 0 : 1;
 
     outcmd->h.id = id;
     *outsize = sizeof(commands_head_t) + sizeof(command_ack_t);
-    return (uint8_t *)outsize;
+    return (uint8_t *)outcmd;
 }

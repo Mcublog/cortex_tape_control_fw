@@ -12,6 +12,8 @@ namespace Communication
 bool process();
 
 void callback_attach_solenoid_pull(command_callback_t c);
+void callback_attach_mech_mode(mech_mode_callback_t c);
+void callback_attach_mech_state(mech_state_callback_t c);
 
 } // namespace Communication
 

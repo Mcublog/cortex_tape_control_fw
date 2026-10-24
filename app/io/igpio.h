@@ -20,6 +20,10 @@ extern "C"
     void io_gpio_solenoid(bool on);
     bool io_gpio_btn0(void);
     bool io_gpio_btn1(void);
+    bool io_gpio_btn2(void);
+    bool io_gpio_btn3(void);
+    bool io_gpio_btn4(void);
+    bool io_gpio_btn5(void);
 
     bool io_gpio_brake_sens(void);
     bool io_gpio_sw1(void);

@@ -27,6 +27,8 @@
 //>>---------------------- Locals
 CobsParser *m_parser = nullptr;
 command_callback_t m_solenoid_pull_clb = nullptr;
+mech_mode_callback_t m_mech_mode_clb = nullptr;
+mech_state_callback_t m_mech_state_clb = nullptr;
 
 static bool command_handler(const command_t *command)
 {
@@ -41,6 +43,12 @@ static bool command_handler(const command_t *command)
     else if (command->h.id == command_id_t::CMDID_SOLENOID_PULL)
         ack = solenoid_pull(command->h.id, command->data, output, limit, &outsize,
                                 m_solenoid_pull_clb);
+    else if (command->h.id == command_id_t::CMDID_MECH_SET_MODE)
+        ack = mech_set_mode(command->h.id, command->data, output, limit, &outsize,
+                            m_mech_mode_clb);
+    else if (command->h.id == command_id_t::CMDID_MECH_GET_STATE)
+        ack = mech_get_state(command->h.id, output, limit, &outsize,
+                             m_mech_state_clb);
 
     if (!ack)
         ack = unk_command_handler(command->h.id, output, limit, &outsize);
@@ -53,6 +61,8 @@ static const command_list_item_t m_command_list[CMDID_LAST] = {
     {CMD_UNKNOWN, command_handler}, // NOTE: must be in 0 index
     {CMDID_GET_VERSION, command_handler},
     {CMDID_SOLENOID_PULL, command_handler},
+    {CMDID_MECH_SET_MODE, command_handler},
+    {CMDID_MECH_GET_STATE, command_handler},
 };
 
 //<<----------------------
@@ -81,4 +91,14 @@ bool Communication::process()
 void Communication::callback_attach_solenoid_pull(command_callback_t c)
 {
     m_solenoid_pull_clb = c;
+}
+
+void Communication::callback_attach_mech_mode(mech_mode_callback_t c)
+{
+    m_mech_mode_clb = c;
+}
+
+void Communication::callback_attach_mech_state(mech_state_callback_t c)
+{
+    m_mech_state_clb = c;
 }

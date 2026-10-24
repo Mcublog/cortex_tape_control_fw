@@ -19,6 +19,13 @@ extern "C"
     uint8_t *solenoid_pull(uint32_t id, const uint8_t *input, command_t *outcmd,
                            uint32_t size, uint32_t *outsize, command_callback_t clb);
 
+    uint8_t *mech_set_mode(uint32_t id, const uint8_t *input, command_t *outcmd,
+                           uint32_t size, uint32_t *outsize,
+                           mech_mode_callback_t clb);
+
+    uint8_t *mech_get_state(uint32_t id, command_t *outcmd, uint32_t size,
+                            uint32_t *outsize, mech_state_callback_t clb);
+
 #ifdef __cplusplus
 }
 #endif
