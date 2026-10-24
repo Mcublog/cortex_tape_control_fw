@@ -9,6 +9,9 @@
 
 - Коммиты — только по отдельному прямому запросу. Не коммитить самостоятельно,
   даже когда правки выглядят завершёнными и проверенными.
+- Версия прошивки бампается **только по прямому запросу**. Не менять
+  `project(... VERSION ...)` в корневом `CMakeLists.txt` и `app/version.h` по своей
+  инициативе — даже если правки меняют протокол или поведение.
 - Состав и объём тестов всегда согласовывать с пользователем заранее. Не добавлять
   новые кейсы и не расширять существующие по своей инициативе.
 
@@ -52,7 +55,7 @@ cmake --build build_mech_test
   нужен перезапуск `cmake -S . -B build ...`, иначе новые исходники не попадут в сборку.
 - `app/version.h` генерируется из `cmake/version.h.in` (`configure_file` в `cmake/CMakeLists.txt`),
   но лежит в git: бамп версии — это правка `project(... VERSION ...)` в корневом `CMakeLists.txt`
-  **и** `app/version.h` одним коммитом.
+  **и** `app/version.h` одним коммитом. Делается только по прямому запросу (см. «Правила работы»).
 - `MAX_TIMERS=10` задаётся из cmake (`cmake/mcu_f0.cmake`, `cmake/desktop.cmake`); дефолт
   библиотеки — 5, а `application()` уже создаёт 5 таймеров.
 - `targets/emu` принудительно ставит host `gcc/g++` даже при ARM-toolchain в кэше — эмулятор
@@ -82,8 +85,10 @@ cmake --build build_mech_test
 
 - `scripts/tapecli/` — Python-клиент протокола. Править только `src/`;
   `scripts/tapecli/build/lib/` — устаревшая копия, не трогать.
-- `tapecli` отстаёт от прошивки: знает команды 0x00–0x02, `CMDID_MECH_*` нет. При добавлении
-  команды в прошивку синхронизировать `scripts/tapecli/src/tapecli/protocol/commands/list.py`.
+- `tapecli` работает подкомандами: `version`, `state`, `stop`, `play-fwd`, `play-rev`,
+  `rewind-fwd`, `rewind-rev`, `set-mode <0..6>`, `solenoid --pull-ms --cooldown-ms`.
+  JSON-файлов с командами больше нет. При добавлении команды в прошивку синхронизировать
+  `scripts/tapecli/src/tapecli/protocol/commands/list.py` и `main.py`.
 - `env/` — venv, собранный на Python 3.12 (системный теперь 3.14), поэтому `env/bin/tapecli`
   падает с `ModuleNotFoundError`. Пересоздавать через `python3.12 -m venv env`.
 - E2E без платы: `scripts/nullmodem_tty.sh` (socat) поднимает `/dev/ttyS10` ↔ `/dev/ttyS11`;

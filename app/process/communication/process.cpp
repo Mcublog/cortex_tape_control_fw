@@ -49,6 +49,9 @@ static bool command_handler(const command_t *command)
     else if (command->h.id == command_id_t::CMDID_MECH_GET_STATE)
         ack = mech_get_state(command->h.id, output, limit, &outsize,
                              m_mech_state_clb);
+    else if (command->h.id == command_id_t::CMDID_MECH_TRANSPORT)
+        ack = mech_transport(command->h.id, command->data, output, limit, &outsize,
+                             m_mech_mode_clb);
 
     if (!ack)
         ack = unk_command_handler(command->h.id, output, limit, &outsize);
@@ -63,6 +66,7 @@ static const command_list_item_t m_command_list[CMDID_LAST] = {
     {CMDID_SOLENOID_PULL, command_handler},
     {CMDID_MECH_SET_MODE, command_handler},
     {CMDID_MECH_GET_STATE, command_handler},
+    {CMDID_MECH_TRANSPORT, command_handler},
 };
 
 //<<----------------------

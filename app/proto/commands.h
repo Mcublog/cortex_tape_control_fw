@@ -12,8 +12,24 @@ typedef enum
     CMDID_SOLENOID_PULL = 0x02,
     CMDID_MECH_SET_MODE = 0x03,
     CMDID_MECH_GET_STATE = 0x04,
+    CMDID_MECH_TRANSPORT = 0x05,
     CMDID_LAST
 } command_id_t;
+
+/**
+ * @brief Действия высокоуровневой команды транспорта.
+ *
+ * Значения передаются по протоколу, менять порядок нельзя.
+ */
+typedef enum
+{
+    MECH_ACTION_STOP = 0,
+    MECH_ACTION_PLAY_FWD,
+    MECH_ACTION_PLAY_REV,
+    MECH_ACTION_REWIND_FWD,
+    MECH_ACTION_REWIND_REV,
+    MECH_ACTION_LAST
+} mech_action_t;
 
 typedef struct
 {
@@ -41,6 +57,11 @@ typedef struct
 {
     uint32_t mode;
 } mech_set_mode_t;
+
+typedef struct
+{
+    uint32_t action;
+} mech_transport_t;
 
 typedef struct
 {
