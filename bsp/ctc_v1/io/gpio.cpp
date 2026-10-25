@@ -42,6 +42,26 @@ bool io_gpio_btn1(void)
     return HAL_GPIO_ReadPin(BTN1_GPIO_Port, BTN1_Pin) == GPIO_PIN_RESET;
 }
 
+bool io_gpio_btn2(void)
+{
+    return HAL_GPIO_ReadPin(BTN2_GPIO_Port, BTN2_Pin) == GPIO_PIN_RESET;
+}
+
+bool io_gpio_btn3(void)
+{
+    return HAL_GPIO_ReadPin(BTN3_GPIO_Port, BTN3_Pin) == GPIO_PIN_RESET;
+}
+
+bool io_gpio_btn4(void)
+{
+    return HAL_GPIO_ReadPin(BTN4_GPIO_Port, BTN4_Pin) == GPIO_PIN_RESET;
+}
+
+bool io_gpio_btn5(void)
+{
+    return HAL_GPIO_ReadPin(BTN5_GPIO_Port, BTN5_Pin) == GPIO_PIN_RESET;
+}
+
 bool io_gpio_brake_sens(void)
 {
     return HAL_GPIO_ReadPin(BRAKE_SENS_GPIO_Port, BRAKE_SENS_Pin) == GPIO_PIN_SET;
@@ -70,5 +90,11 @@ bool io_gpio_sw4(void)
 bool io_gpio_tacho(void)
 {
     return HAL_GPIO_ReadPin(TACHO_GPIO_Port, TACHO_Pin) == GPIO_PIN_RESET;
+}
+
+void io_gpio_power(bool on)
+{
+    HAL_GPIO_WritePin(POWER_ON_GPIO_Port, POWER_ON_Pin,
+                      on ? GPIO_PIN_SET : GPIO_PIN_RESET);
 }
 //<<----------------------

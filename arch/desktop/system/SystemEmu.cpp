@@ -14,6 +14,7 @@
 
 #include "SystemEmu.hpp"
 
+#include "app/mech/board_mech_io.hpp"
 #include "app/proto/cobs/Parser.hpp"
 #include "app/utils/idelay.h"
 
@@ -88,4 +89,9 @@ Indication *SystemEmu::indication()
 CobsParser *SystemEmu::cobs_parser()
 {
     return &m_cobsp;
+}
+
+MechIo *SystemEmu::mech_io()
+{
+    return &board_mech_io();
 }

@@ -10,8 +10,26 @@ typedef enum
     CMD_UNKNOWN = 0x00, // NOTE: must be in 0 index
     CMDID_GET_VERSION = 0x01,
     CMDID_SOLENOID_PULL = 0x02,
+    CMDID_MECH_SET_MODE = 0x03,
+    CMDID_MECH_GET_STATE = 0x04,
+    CMDID_MECH_TRANSPORT = 0x05,
     CMDID_LAST
 } command_id_t;
+
+/**
+ * @brief Действия высокоуровневой команды транспорта.
+ *
+ * Значения передаются по протоколу, менять порядок нельзя.
+ */
+typedef enum
+{
+    MECH_ACTION_STOP = 0,
+    MECH_ACTION_PLAY_FWD,
+    MECH_ACTION_PLAY_REV,
+    MECH_ACTION_REWIND_FWD,
+    MECH_ACTION_REWIND_REV,
+    MECH_ACTION_LAST
+} mech_action_t;
 
 typedef struct
 {
@@ -35,13 +53,38 @@ typedef struct
     uint32_t cooldown_ms;
 } sollenoid_pull_t;
 
+typedef struct
+{
+    uint32_t mode;
+} mech_set_mode_t;
+
+typedef struct
+{
+    uint32_t action;
+} mech_transport_t;
+
+typedef struct
+{
+    uint32_t mode;
+    uint32_t target_mode;
+    uint32_t user_mode;
+    uint32_t transition;
+    uint32_t retries;
+    uint32_t error;
+    uint32_t sensors;
+    uint32_t last_dir;
+    uint32_t capstan;
+} mech_state_t;
+
+typedef void (*command_callback_t)(void *data, uint32_t size);
+typedef bool (*mech_mode_callback_t)(uint32_t mode);
+typedef void (*mech_state_callback_t)(mech_state_t *state);
+
 typedef struct command_list_item
 {
     uint32_t id;
     bool (*handler)(const command_t *cmd);
 } command_list_item_t;
-
-typedef void(*command_callback_t)(void *data, uint32_t size);
 
 #ifdef __cplusplus
 extern "C" {

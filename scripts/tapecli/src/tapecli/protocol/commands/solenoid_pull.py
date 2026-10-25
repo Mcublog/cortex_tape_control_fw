@@ -18,7 +18,7 @@ class SolenoidPullRequestV1LL(ct.Structure):
         self.cmdid = Commands.CMDID_SOLENOID_PULL.value
 
 
-class SettingsResponseV1LL(ct.Structure):
+class SolenoidPullResponseV1LL(ct.Structure):
     _pack_ = 1
     _fields_ = [
         ('error', ct.c_uint32),
@@ -29,14 +29,12 @@ class SettingsResponseV1LL(ct.Structure):
 class SolenoidPullV1:
     pull_time_ms: int = 0
     cooldown_ms: int = 0
+    error: int = 0
 
     @staticmethod
     def response(raw: bytes) -> 'SolenoidPullV1':
-        ll = SettingsResponseV1LL.from_buffer_copy(raw)
-        return SolenoidPullV1(
-            pull_time_ms=int(ll.pull_time_ms),
-            cooldown_ms=int(ll.cooldown_ms),
-        )
+        ll = SolenoidPullResponseV1LL.from_buffer_copy(raw)
+        return SolenoidPullV1(error=int(ll.error))
 
     def request(self) -> Command:
         payload = SolenoidPullRequestV1LL()

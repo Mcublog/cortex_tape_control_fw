@@ -58,7 +58,7 @@ class Device:
                 self.adapter.write(command)
                 if not (command := self.adapter.read()):
                     continue
-                log.info(f"RX: {command}")
+                self.on_command_rx(command)
 
     @abstractmethod
     def on_command_rx(self, command: Command) -> None:

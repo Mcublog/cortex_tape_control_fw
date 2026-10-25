@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "app/interfaces/MechIo.hpp"
 #include "app/interfaces/Serial.hpp"
 #include "app/proto/cobs/Parser.hpp"
 #include "app/ui/Indication.hpp"
@@ -21,6 +22,7 @@ public:
     virtual Serial *communication_serial() = 0;
     virtual CobsParser *cobs_parser() = 0;
     virtual Indication *indication() = 0;
+    virtual MechIo *mech_io() = 0;
 
     static void infitite_loop()
     {

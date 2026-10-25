@@ -10,6 +10,7 @@
  */
 #include "SystemHw.hpp"
 
+#include "app/mech/board_mech_io.hpp"
 #include "app/proto/cobs/Parser.hpp"
 #include "app/utils/idelay.h"
 
@@ -77,4 +78,9 @@ bool SystemHW::prepare_to_sleep()
 Indication *SystemHW::indication()
 {
     return &m_indication;
+}
+
+MechIo *SystemHW::mech_io()
+{
+    return &board_mech_io();
 }

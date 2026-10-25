@@ -24,9 +24,13 @@
 //<<----------------------
 
 //>>---------------------- Locals
-static constexpr uint8_t kBtnNumber = 2;
+static constexpr uint8_t kBtnNumber = 6;
 static Button m_btns[kBtnNumber] = {Button(egde_t::EDGE_RAISING, 500, io_gpio_btn0),
-                                    Button(egde_t::EDGE_RAISING, 500, io_gpio_btn1)};
+                                    Button(egde_t::EDGE_RAISING, 500, io_gpio_btn1),
+                                    Button(egde_t::EDGE_RAISING, 500, io_gpio_btn2),
+                                    Button(egde_t::EDGE_RAISING, 500, io_gpio_btn3),
+                                    Button(egde_t::EDGE_RAISING, 500, io_gpio_btn4),
+                                    Button(egde_t::EDGE_RAISING, 500, io_gpio_btn5)};
 //<<----------------------
 
 static void buttons_process(uint8_t id)

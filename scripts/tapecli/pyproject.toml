@@ -4,3 +4,23 @@ known_local_folder = ["tapcli"]
 
 [tool.pyright]
 include = ["src"]
+
+[tool.setuptools.dynamic]
+version = {attr = "tapecli.version.VERSION"}
+
+[build-system]
+requires = ["setuptools>=61.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tapecli"
+dynamic = ["version"]
+dependencies = [
+    "cobs==1.2.2",
+    "pyserial==3.5",
+    "pylogus==0.1.0",
+    "crc==6.1.1"
+]
+
+[project.scripts]
+tapecli = "tapecli.main:main"

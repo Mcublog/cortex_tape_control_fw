@@ -1,5 +1,6 @@
 targets/ctc_v1/.mxproject
 build/
+build_mech_test/
 targets/ctc_v1/Makefile
 env/
 *.egg-info
