@@ -26,6 +26,11 @@ class Crp42602y
     /**
      * @brief Запросить новый пользовательский режим.
      *
+     * Повторный запрос перемотки в текущем направлении разворачивает его
+     * на противоположное. Если лента уже кончилась в запрошенном направлении
+     * (был автостоп по таймауту тахометра), запрос play или перемотки в эту
+     * сторону подменяется на противоположный.
+     *
      * @return false, если запрос запрещён (HALT, защита записи и т.п.)
      */
     bool request(mech::UserMode mode);
@@ -68,6 +73,35 @@ class Crp42602y
     mech::Mode user_to_transport(mech::UserMode mode,
                                  mech::Direction dir) const;
 
+    /**
+     * @brief Проверить, что перемотка в заданном направлении уже идёт или запрошена.
+     *
+     * Приоритет проверки: последний запрос пользователя, затем целевая мода,
+     * затем текущая мода. Благодаря этому повторное нажатие во время перехода
+     * возвращает прежнее направление, а не игнорируется.
+     *
+     * @param mode запрошенный пользовательский режим перемотки
+     */
+    bool wind_active(mech::UserMode mode) const;
+
+    /**
+     * @brief Развернуть запрос play или перемотки, если лента кончилась в эту сторону.
+     *
+     * @param mode запрошенный пользовательский режим
+     * @return противоположное направление, если оно уже упиралось в конец ленты,
+     * иначе исходный запрос
+     */
+    mech::UserMode apply_tape_end(mech::UserMode mode) const;
+
+    /**
+     * @brief Развернуть повторный запрос перемотки на противоположное направление.
+     *
+     * @param mode запрошенный пользовательский режим
+     * @return противоположная перемотка, если в текущем направлении уже мотаем,
+     * иначе исходный запрос
+     */
+    mech::UserMode apply_wind_toggle(mech::UserMode mode) const;
+
     MechIo &m_io;
 
     mech::Features m_features;
@@ -77,6 +111,10 @@ class Crp42602y
     mech::Mode m_mode = mech::Mode::Stop;
     mech::Mode m_target_mode = mech::Mode::ToInit;
     mech::Direction m_last_play_dir = mech::Direction::Fwd;
+    mech::Direction m_eof_dir = mech::Direction::Fwd;
+
+    // Лента кончилась в направлении m_eof_dir (автостоп по таймауту тахометра).
+    bool m_eof = false;
 
     uint8_t m_trans_timer = 0;
     uint16_t m_idle_time = 0;

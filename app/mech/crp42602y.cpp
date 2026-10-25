@@ -64,6 +64,16 @@ bool target_rec(mech::Mode mode)
     return (mode == mech::Mode::RcFwd) || (mode == mech::Mode::RcRev);
 }
 
+bool mode_wind_fwd(mech::Mode mode)
+{
+    return (mode == mech::Mode::FwFwd) || (mode == mech::Mode::FwFwdHdRev);
+}
+
+bool mode_wind_rev(mech::Mode mode)
+{
+    return (mode == mech::Mode::FwRev) || (mode == mech::Mode::FwRevHdRev);
+}
+
 } // namespace
 
 Crp42602y::Crp42602y(MechIo &io) : m_io(io)
@@ -82,6 +92,8 @@ void Crp42602y::init()
     m_mode = mech::Mode::Stop;
     m_target_mode = mech::Mode::ToInit;
     m_last_play_dir = mech::Direction::Fwd;
+    m_eof_dir = mech::Direction::Fwd;
+    m_eof = false;
 
     m_trans_timer = 0;
     m_idle_time = 0;
@@ -245,6 +257,7 @@ void Crp42602y::state_machine()
     if (!m_sensors.tape_in)
     {
         m_last_play_dir = mech::Direction::Fwd;
+        m_eof = false;
         m_user_mode = mech::UserMode::Stop;
 
         if ((m_target_mode != mech::Mode::Halt) &&
@@ -329,6 +342,63 @@ mech::Mode Crp42602y::user_to_transport(mech::UserMode mode,
     default:
         return mech::Mode::Stop;
     }
+}
+
+bool Crp42602y::wind_active(mech::UserMode mode) const
+{
+    const bool fwd = (mode == mech::UserMode::FwindFwd);
+
+    // Последний запрос пользователя важнее уже запущенного перехода.
+    if (fwd)
+    {
+        return (m_user_mode == mech::UserMode::FwindFwd) ||
+               mode_wind_fwd(m_target_mode) || mode_wind_fwd(m_mode);
+    }
+
+    return (m_user_mode == mech::UserMode::FwindRev) ||
+           mode_wind_rev(m_target_mode) || mode_wind_rev(m_mode);
+}
+
+mech::UserMode Crp42602y::apply_tape_end(mech::UserMode mode) const
+{
+    if (!m_eof || !m_features.reverse_enable)
+        return mode;
+
+    const bool at_fwd_end = (m_eof_dir == mech::Direction::Fwd);
+
+    if (at_fwd_end)
+    {
+        if (mode == mech::UserMode::PlayFwd)
+            return mech::UserMode::PlayRev;
+
+        if (mode == mech::UserMode::FwindFwd)
+            return mech::UserMode::FwindRev;
+    }
+    else
+    {
+        if (mode == mech::UserMode::PlayRev)
+            return mech::UserMode::PlayFwd;
+
+        if (mode == mech::UserMode::FwindRev)
+            return mech::UserMode::FwindFwd;
+    }
+
+    return mode;
+}
+
+mech::UserMode Crp42602y::apply_wind_toggle(mech::UserMode mode) const
+{
+    if (!m_features.reverse_enable)
+        return mode;
+
+    if ((mode != mech::UserMode::FwindFwd) && (mode != mech::UserMode::FwindRev))
+        return mode;
+
+    if (!wind_active(mode))
+        return mode;
+
+    return (mode == mech::UserMode::FwindFwd) ? mech::UserMode::FwindRev
+                                              : mech::UserMode::FwindFwd;
 }
 
 void Crp42602y::set_error(mech::Error err)
@@ -480,6 +550,13 @@ void Crp42602y::static_mode()
             out_mute(true);
             out_rec_en(false);
 
+            // Лента кончилась в направлении текущего воспроизведения.
+            m_eof = true;
+            m_eof_dir = ((m_mode == mech::Mode::PbFwd) ||
+                         (m_mode == mech::Mode::RcFwd))
+                            ? mech::Direction::Fwd
+                            : mech::Direction::Rev;
+
             m_target_mode = mech::Mode::Stop;
             m_last_play_dir = mech::Direction::Fwd;
             m_user_mode = mech::UserMode::Stop;
@@ -555,6 +632,13 @@ void Crp42602y::static_mode()
 
         if (m_tacho_timer > kTachoFwindMax)
         {
+            // Лента кончилась в направлении текущей перемотки.
+            m_eof = true;
+            m_eof_dir = ((m_mode == mech::Mode::FwFwd) ||
+                         (m_mode == mech::Mode::FwFwdHdRev))
+                            ? mech::Direction::Fwd
+                            : mech::Direction::Rev;
+
             m_target_mode = mech::Mode::Stop;
             m_last_play_dir = mech::Direction::Fwd;
             m_user_mode = mech::UserMode::Stop;
@@ -726,6 +810,9 @@ void Crp42602y::cyclogram()
             }
             else
             {
+                // Лента поехала в новом режиме: сведения о конце ленты устарели.
+                m_eof = false;
+
                 if (is_play_rec_mode(m_mode))
                     out_mute(false);
 
@@ -755,6 +842,10 @@ bool Crp42602y::request(mech::UserMode mode)
     if ((m_mode == mech::Mode::Halt) || (m_target_mode == mech::Mode::Halt) ||
         (m_mode == mech::Mode::SubToHalt))
         return false;
+
+    // Повторная перемотка разворачивает направление, конец ленты — тоже.
+    mode = apply_wind_toggle(mode);
+    mode = apply_tape_end(mode);
 
     // Выход из записи разрешён только через STOP.
     const bool rec_requested = (m_user_mode == mech::UserMode::RecFwd) ||

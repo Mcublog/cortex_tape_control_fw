@@ -476,6 +476,114 @@ void test_fw_autostop()
              static_cast<uint8_t>(mech::Mode::Stop));
 }
 
+void test_play_eof_reverse()
+{
+    FakeIo io;
+    Crp42602y mech(io);
+    bring_to_stop(mech, io);
+
+    io.home_state = false;
+    CHECK(mech.request(mech::UserMode::PlayFwd));
+    step(mech, io, 215);
+    CHECK_EQ(static_cast<uint8_t>(mech.mode()),
+             static_cast<uint8_t>(mech::Mode::PbFwd));
+
+    // Тахометр молчит: конец ленты в направлении вперёд, автостоп.
+    step(mech, io, 520);
+    CHECK(mech.target_mode() == mech::Mode::Stop);
+
+    io.home_state = true;
+    step(mech, io, 170);
+    CHECK_EQ(static_cast<uint8_t>(mech.mode()),
+             static_cast<uint8_t>(mech::Mode::Stop));
+
+    // Нажатие play вперёд на конце ленты запускает воспроизведение назад.
+    const int rev_start = start_active(mech, io);
+    CHECK(mech.request(mech::UserMode::PlayFwd));
+    step(mech, io, 215);
+    CHECK_EQ(static_cast<uint8_t>(mech.mode()),
+             static_cast<uint8_t>(mech::Mode::PbRev));
+    CHECK_EQ(static_cast<uint8_t>(mech.last_play_dir()),
+             static_cast<uint8_t>(mech::Direction::Rev));
+    check_solenoid(io, rev_start, {{2, 53}, {75, 129}}, 210);
+
+    // Обратный конец ленты: нажатие play назад даёт воспроизведение вперёд.
+    step(mech, io, 520);
+    CHECK(mech.target_mode() == mech::Mode::Stop);
+
+    io.home_state = true;
+    step(mech, io, 170);
+    CHECK_EQ(static_cast<uint8_t>(mech.mode()),
+             static_cast<uint8_t>(mech::Mode::Stop));
+
+    io.home_state = false;
+    CHECK(mech.request(mech::UserMode::PlayRev));
+    step(mech, io, 215);
+    CHECK_EQ(static_cast<uint8_t>(mech.mode()),
+             static_cast<uint8_t>(mech::Mode::PbFwd));
+    CHECK_EQ(static_cast<uint8_t>(mech.last_play_dir()),
+             static_cast<uint8_t>(mech::Direction::Fwd));
+}
+
+void test_wind_reverse()
+{
+    FakeIo io;
+    Crp42602y mech(io);
+    bring_to_stop(mech, io);
+
+    // Середина ленты: повторная перемотка вперёд разворачивает направление.
+    io.home_state = false;
+    CHECK(mech.request(mech::UserMode::FwindFwd));
+    step(mech, io, 215);
+    CHECK_EQ(static_cast<uint8_t>(mech.mode()),
+             static_cast<uint8_t>(mech::Mode::FwFwd));
+
+    CHECK(mech.request(mech::UserMode::FwindFwd));
+    io.home_state = true;
+
+    int guard = 0;
+    while ((mech.mode() != mech::Mode::Stop) && (guard++ < 400))
+        step(mech, io, 1);
+    CHECK_EQ(static_cast<uint8_t>(mech.mode()),
+             static_cast<uint8_t>(mech::Mode::Stop));
+
+    io.home_state = false;
+    step(mech, io, 215);
+    CHECK_EQ(static_cast<uint8_t>(mech.mode()),
+             static_cast<uint8_t>(mech::Mode::FwRev));
+
+    // Повторная перемотка назад возвращает перемотку вперёд.
+    CHECK(mech.request(mech::UserMode::FwindRev));
+    io.home_state = true;
+
+    guard = 0;
+    while ((mech.mode() != mech::Mode::Stop) && (guard++ < 400))
+        step(mech, io, 1);
+    CHECK_EQ(static_cast<uint8_t>(mech.mode()),
+             static_cast<uint8_t>(mech::Mode::Stop));
+
+    io.home_state = false;
+    step(mech, io, 215);
+    CHECK_EQ(static_cast<uint8_t>(mech.mode()),
+             static_cast<uint8_t>(mech::Mode::FwFwd));
+
+    // Перемотка вперёд до конца ленты: нажатие вперёд мотает назад.
+    step(mech, io, 120);
+    CHECK(mech.target_mode() == mech::Mode::Stop);
+
+    io.home_state = true;
+    step(mech, io, 170);
+    CHECK_EQ(static_cast<uint8_t>(mech.mode()),
+             static_cast<uint8_t>(mech::Mode::Stop));
+
+    // Головка остаётся в REV, как и при явном запросе перемотки назад.
+    io.home_state = false;
+    CHECK(mech.request(mech::UserMode::FwindFwd));
+    step(mech, io, 215);
+    CHECK_EQ(static_cast<uint8_t>(mech.mode()),
+             static_cast<uint8_t>(mech::Mode::FwRevHdRev));
+}
+
 } // namespace
 
 int main()
@@ -529,6 +637,8 @@ int main()
     test_record_guard();
     test_play_autostop();
     test_fw_autostop();
+    test_play_eof_reverse();
+    test_wind_reverse();
     test_idle_timeout();
 
     std::printf("%d checks, %d failures\n", g_checks, g_failures);
